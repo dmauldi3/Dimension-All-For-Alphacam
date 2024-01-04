@@ -33,13 +33,28 @@ namespace AlphacamAddinSample.Models
         {
           if (geometry is IPath element && IsGeometryLayer(element))
           {
-            if (andUpdateRunCount % 2 == 1)
-              this.CreateDimensions(element);
-            else
-              this.DeleteDimensions();
+            // Explode the geometry into individual paths
+            Paths explodedPaths = element.Explode();
+
+            foreach (IPath path in explodedPaths)
+            {
+              if (andUpdateRunCount % 2 == 1)
+              {
+                this.CreateDimensions(path); // Do this for all exploded paths
+                activeDrawing.ZoomAll();
+              }
+              else
+              {
+                this.DeleteDimensions();
+              }
+            }
+
+            double tolerance = -1.0; // Set tolerance (modify as needed)
+            explodedPaths.JoinGeosQuick(tolerance); // Join geometries back together before creating the dimensions
           }
+
+          activeDrawing.Refresh();
         }
-        activeDrawing.Refresh();
       }
     }
 
@@ -72,15 +87,23 @@ namespace AlphacamAddinSample.Models
 
     private void CreateDimensions(IPath element)
     {
-      double minXl = element.MinXL;
-      double minYl = element.MinYL;
-      double maxXl = element.MaxXL;
-      double maxYl = element.MaxYL;
       double offset = 10.0;
-      this.CreateAlignedDimension(minXl, minYl, minXl, maxYl, -offset);
-      this.CreateAlignedDimension(minXl, maxYl, maxXl, maxYl, -offset);
-      this.CreateAlignedDimension(maxXl, maxYl, maxXl, minYl, offset);
-      this.CreateAlignedDimension(maxXl, minYl, minXl, minYl, offset);
+      double totalLength = element.Length;
+
+      // Inline out variable declaration for start point
+      element.PointAtDistanceAlongPathL(0, out double startX, out double startY, out _);
+
+      // Inline out variable declaration for end point
+      element.PointAtDistanceAlongPathL(totalLength, out double endX, out double endY, out _);
+      try
+      {
+        // Use startX, startY, endX, endY to create dimensions
+        CreateAlignedDimension(startX, startY, endX, endY, offset);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show($"Exception: {ex.Message}");
+      }
     }
 
     private void DeleteDimensions()
