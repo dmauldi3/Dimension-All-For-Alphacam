@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace AlphacamAddinSample.Models
+namespace DimensionAll.Models
 {
     internal class MemoryManager : IDisposable
     {

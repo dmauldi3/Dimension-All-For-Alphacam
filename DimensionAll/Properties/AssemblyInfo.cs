@@ -7,14 +7,14 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle ( "AlphacamAddinSample" )]
-[assembly: AssemblyDescription ( "" )]
-[assembly: AssemblyConfiguration ( "" )]
-[assembly: AssemblyCompany ( "" )]
-[assembly: AssemblyProduct ( "AlphacamAddinSample" )]
-[assembly: AssemblyCopyright ( "Copyright ©  2021" )]
-[assembly: AssemblyTrademark ( "" )]
-[assembly: AssemblyCulture ( "" )]
+[assembly: AssemblyTitle("Dimension All")]
+[assembly: AssemblyDescription("A tool developed by Daniel Maulding at Elite Stone Equipment LLC")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("Elite Stone Equipment LLC")]
+[assembly: AssemblyProduct("Dimension All")]
+[assembly: AssemblyCopyright("Copyright © 2024 Daniel Maulding at Elite Stone Equipment LLC")]
+[assembly: AssemblyTrademark("Elite Stone Equipment LLC")]
+[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from

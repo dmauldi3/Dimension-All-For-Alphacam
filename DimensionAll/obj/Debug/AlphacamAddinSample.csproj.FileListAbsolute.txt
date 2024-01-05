@@ -13,8 +13,6 @@ C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\Alp
 C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\AlphacamAddinSample\bin\Debug\AlphacamAddinSample.pdb
 C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\AlphacamAddinSample\bin\Debug\Interop.AlphaCAMMill.dll
 C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\AlphacamAddinSample\obj\Debug\AlphacamAddinSample.csproj.AssemblyReference.cache
-C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\AlphacamAddinSample\obj\Debug\Interop.AlphaCAMMarble.dll
-C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\AlphacamAddinSample\obj\Debug\AlphacamAddinSample.csproj.ResolveComReference.cache
 C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\AlphacamAddinSample\obj\Debug\AlphacamAddinSample.Properties.Resources.resources
 C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\AlphacamAddinSample\obj\Debug\AlphacamAddinSample.csproj.GenerateResource.cache
 C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\AlphacamAddinSample\obj\Debug\AlphacamAddinSample.csproj.CoreCompileInputs.cache

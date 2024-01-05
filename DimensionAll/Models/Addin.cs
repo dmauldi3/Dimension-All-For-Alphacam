@@ -3,13 +3,14 @@ using System;
 using System.IO;
 using System.Windows;
 
-namespace AlphacamAddinSample.Models
+namespace DimensionAll.Models
 {
   public sealed class Addin
   {
     private readonly App _acamApp;
     private readonly string _runCountFilePath;
-
+    
+    
     public Addin(App acamApplication)
     {
       this._acamApp = acamApplication;

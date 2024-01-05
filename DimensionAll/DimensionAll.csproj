@@ -7,7 +7,7 @@
     <ProjectGuid>{C39B6B60-5AD1-4D06-A57F-1ABE83A3E0AD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>AlphacamAddinSample</RootNamespace>
-    <AssemblyName>AlphacamAddinSample</AssemblyName>
+    <AssemblyName>DimensionAll</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -89,17 +89,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="PrivateReferences\Interop.AlphaCAMMill.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="AlphaCAMMarble">
-      <Guid>{9D23E920-9F0B-11D2-9907-00104B4AF281}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

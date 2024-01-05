@@ -2,7 +2,7 @@
 using System;
 
 
-namespace AlphacamAddinSample.Models
+namespace DimensionAll.Models
 {
   public sealed class AlphacamEvents : IDisposable
   {

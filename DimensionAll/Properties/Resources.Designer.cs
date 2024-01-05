@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 
-namespace AlphacamAddinSample.Properties
+namespace DimensionAll.Properties
 {
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
@@ -43,7 +43,7 @@ namespace AlphacamAddinSample.Properties
             {
                 if ( (resourceMan == null) )
                 {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AlphacamAddinSample.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DimensionAll.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
