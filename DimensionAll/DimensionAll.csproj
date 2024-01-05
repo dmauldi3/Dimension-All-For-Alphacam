@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C39B6B60-5AD1-4D06-A57F-1ABE83A3E0AD}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>AlphacamAddinSample</RootNamespace>
+    <RootNamespace>DimensionAll</RootNamespace>
     <AssemblyName>DimensionAll</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -94,7 +94,7 @@
   <PropertyGroup>
     <PostBuildEvent>del $(TargetDir)Interop.*
 $(SolutionDir)CreateAcamAddin\$(OutDir)CreateAcamAddin.exe $(TargetName) $(TargetDir)
-xcopy "$(TargetDir)" "$(DotNetAddins)\SampleAddin" /r /s /y /e /i
+xcopy "$(TargetDir)" "$(DotNetAddins)\DimensionAll" /r /s /y /e /i
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

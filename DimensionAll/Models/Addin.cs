@@ -10,7 +10,6 @@ namespace DimensionAll.Models
     private readonly App _acamApp;
     private readonly string _runCountFilePath;
     
-    
     public Addin(App acamApplication)
     {
       this._acamApp = acamApplication;

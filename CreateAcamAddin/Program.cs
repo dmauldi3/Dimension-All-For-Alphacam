@@ -42,8 +42,8 @@ namespace CreateAcamAddin
                 return;
             }
 
-            string strOutputName = getOutputName(args);
-            string strOutputDir = getDirectory(args);
+            string strOutputName = GetOutputName(args);
+            string strOutputDir = GetDirectory(args);
             string strOutputFile = $"{strOutputDir}{strOutputName}.acamaddin";
 
             StringBuilder objBuilder = new StringBuilder();
@@ -80,7 +80,7 @@ namespace CreateAcamAddin
             File.WriteAllText (strOutputFile, objBuilder.ToString ( ), Encoding.ASCII );
         }
 
-        static string getDirectory ( string[] args )
+        static string GetDirectory ( string[] args )
         {
             foreach ( var arg in args )
             {
@@ -93,7 +93,7 @@ namespace CreateAcamAddin
             return string.Empty;
         }
 
-        static string getOutputName ( string[] args )
+        static string GetOutputName ( string[] args )
         {
             foreach ( var arg in args )
             {
