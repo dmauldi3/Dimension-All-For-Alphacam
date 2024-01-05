@@ -19,7 +19,7 @@ namespace DimensionAll.Models
       this._runCountFilePath = System.IO.Path.Combine(str, "run_count.txt");
     }
 
-    public void DimensionAll()
+    /*public void DimensionAll()
     {
       int andUpdateRunCount = this.GetAndUpdateRunCount();
       Drawing activeDrawing = this._acamApp.ActiveDrawing;
@@ -56,6 +56,36 @@ namespace DimensionAll.Models
           activeDrawing.Refresh();
         }
       }
+    }*/
+    
+    public void DimensionAll()
+    {
+      int andUpdateRunCount = this.GetAndUpdateRunCount();
+      Drawing activeDrawing = this._acamApp.ActiveDrawing;
+      if (activeDrawing.Geometries.Count == 0)
+      {
+        MessageBox.Show("No geometries found to measure.");
+      }
+      else
+      {
+        foreach (object geometry in activeDrawing.Geometries)
+        {
+          if (geometry is IPath element && IsGeometryLayer(element))
+          {
+            if (andUpdateRunCount % 2 == 1)
+            {
+              this.CreateDimensions(element);
+              activeDrawing.ZoomAll();
+            }
+            else
+            {
+              this.DeleteDimensions();
+            }
+          }
+
+          activeDrawing.Refresh();
+        }
+      }
     }
 
     private int GetAndUpdateRunCount()
@@ -85,7 +115,7 @@ namespace DimensionAll.Models
       return andUpdateRunCount;
     }
 
-    private void CreateDimensions(IPath element)
+    /*private void CreateDimensions(IPath element)
     {
       double offset = 10.0;
       double totalLength = element.Length;
@@ -104,7 +134,56 @@ namespace DimensionAll.Models
       {
         MessageBox.Show($"Exception: {ex.Message}");
       }
+    }*/
+    
+    
+    private void CreateDimensions(IPath path)
+    {
+      double offset = 10.0;
+      Element previousElement = null;  // Keep track of the previous element
+      Element lastElement = path.GetLastElem();  // Get the last element
+    
+      int count = 0; // Count the current elements
+      int elemCount = path.GetElemCount(); // Get total number of elements
+
+      Element element = path.GetFirstElem(); // Get the first element
+      while (element != null && count < elemCount) // stop if count exceeds expected element count
+      {
+        // If current element is the same as previous element or the last element, break the loop
+        
+        if (previousElement != null && element.IsSame(previousElement)) 
+        {
+          MessageBox.Show("Processing the same element again. No new elements found, exiting the loop.");
+          break;
+        }
+        
+        if (element.IsSame(lastElement)) 
+        {
+         // MessageBox.Show("Processing the last element, exists loop after this.");
+        }
+
+        double startX = element.StartXG;
+        double startY = element.StartYG;
+        double endX = element.EndXG;
+        double endY = element.EndYG;
+
+        try
+        {
+          // Use startX, startY, endX, endY to create dimensions
+          CreateAlignedDimension(startX, startY, endX, endY, offset);
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show($"Exception: {ex.Message}");
+        }
+        
+        // Set the current element as previous element before getting the next element
+        previousElement = element;
+        element = element.GetNext(); // Get the next element
+        count++; // Increase the count
+      }
     }
+    
 
     private void DeleteDimensions()
     {

@@ -38,9 +38,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Interop.AlphaCAMMill, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+    <Reference Include="Interop.AlphaCAMMill">
       <HintPath>PrivateReferences\Interop.AlphaCAMMill.dll</HintPath>
     </Reference>
     <Reference Include="System" />
