@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DimensionAll", "DimensionAll\DimensionAll.csproj", "{C39B6B60-5AD1-4D06-A57F-1ABE83A3E0AD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{207281DE-DB83-4321-A730-A9FBB207792B} = {207281DE-DB83-4321-A730-A9FBB207792B}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateAcamAddin", "CreateAcamAddin\CreateAcamAddin.csproj", "{207281DE-DB83-4321-A730-A9FBB207792B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C39B6B60-5AD1-4D06-A57F-1ABE83A3E0AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C39B6B60-5AD1-4D06-A57F-1ABE83A3E0AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C39B6B60-5AD1-4D06-A57F-1ABE83A3E0AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C39B6B60-5AD1-4D06-A57F-1ABE83A3E0AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{207281DE-DB83-4321-A730-A9FBB207792B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{207281DE-DB83-4321-A730-A9FBB207792B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{207281DE-DB83-4321-A730-A9FBB207792B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{207281DE-DB83-4321-A730-A9FBB207792B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {44B15584-DFB7-4105-BE39-E98128A9661C}
+	EndGlobalSection
+EndGlobal

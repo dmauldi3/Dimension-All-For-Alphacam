@@ -29,22 +29,29 @@ namespace DimensionAll.Models
       }
       else
       {
+        
+        SetToolSideForAllGeometries(activeDrawing.Geometries); //Set tool side for all geometries
+        
         foreach (object geometry in activeDrawing.Geometries)
         {
           if (geometry is IPath element && IsGeometryLayer(element))
           {
-            if (andUpdateRunCount % 2 == 1)
+            if (!DetermineIfInternal(element) && element.Closed) // Add this condition to check if the element is external and closed
             {
-              this.CreateDimensions(element);
-              activeDrawing.ZoomAll();
-            }
-            else
-            {
-              this.DeleteDimensions();
-            }
-          }
+              if (andUpdateRunCount % 2 == 1)
+              {
+                this.CreateDimensions(element);
 
-          activeDrawing.Refresh();
+                activeDrawing.ZoomAll();
+              }
+              else
+              {
+                this.DeleteDimensions();
+              }
+            }
+
+            activeDrawing.Refresh();
+          }
         }
       }
     }
@@ -77,112 +84,101 @@ namespace DimensionAll.Models
     }
 
 
-    
-    
-    
-    private void CreateDimensions(IPath path)
+private void CreateDimensions(IPath path)
+{
+    double offset = 10.0;
+    int count = 0;
+    int totalElements = path.GetElemCount();
+    double minimumLength = 4.0; // Set your minimum length here
+
+    bool previousWasArc = false;
+    Element previousElement = null;
+
+    Element element = path.GetFirstElem();
+    while (count++ < totalElements && element != null)
     {
-      double offset = 10.0;
-      Element previousElement = null;
+        Element nextElement = element.GetNext();
 
-      int count = 0;
-      int totalElements = path.GetElemCount();
-      
-      bool previousWasArc = false; // Add this line
-
-      Element element = path.GetFirstElem();
-      while (element != null && count < totalElements)
-      {
-        // Skip if no new elements are found
-        if (previousElement != null && element.IsSame(previousElement))
-        {
-          MessageBox.Show("Processing the same element again. No new elements found, exiting the loop.");
-          break;
-        }
-
-        Element nextElement = element.GetNext(); 
-
-        // Get parameters for creating dimensions
         double startX = element.StartXG;
         double startY = element.StartYG;
         double endX = element.EndXG;
         double endY = element.EndYG;
 
-        // Get direction vectors
-        element.GetDirection(startX, startY, out double startDirX, out double startDirY, out _);
-        element.GetDirection(endX, endY, out double endDirX, out double endDirY, out _);
+        ApplyOffsetIfNextElementIsArc(element, nextElement, ref endX, ref endY);
 
-        // Extend the length of the line if followed by an arc
-        if (nextElement != null && nextElement.IsArc)
+        if (previousWasArc && previousElement != null)
         {
-          endX += nextElement.Radius * endDirX;
-          endY += nextElement.Radius * endDirY;
+          previousElement.GetDirection(startX, startY, out var startDirX, out var startDirY, out _);
+            ApplyOffsetForPreviousArc(previousElement, ref startX, ref startY, startDirX, startDirY);
         }
 
-        // Extend the start of the line if the previous element was an arc
-        if (previousWasArc)
-        {
-          startX -= previousElement.Radius * startDirX;
-          startY -= previousElement.Radius * startDirY;
-        }
-
-        // Remember if the current element is an arc for the next iteration
         previousWasArc = element.IsArc;
 
-        // Join declaration and assignment
-        double avgDirX = (startDirX + endDirX) / 2.0;
-        double avgDirY = (startDirY + endDirY) / 2.0;
-
-        double perpX, perpY; // Perpendicular
-
-        if (element.IsArc)
+        // Check if the line length is greater than the minimum length and if the element is not an arc
+        if (!element.IsArc && element.Length > minimumLength)
         {
-            // Arc has different winding direction compared to path
-            // CW arc in a CW path or CCW arc in a CCW path
-            if ( (!element.CW && avgDirY < 0.0) || (element.CW && avgDirY >= 0.0))
+          element.GetDirection(startX, startY, out var startDirX, out var startDirY, out _);
+            element.GetDirection(endX, endY, out var endDirX, out var endDirY, out _);
+
+            var avgDirX = (startDirX + endDirX) / 2.0;
+            var avgDirY = (startDirY + endDirY) / 2.0;
+
+            CalculatePerpendicularDirections(element, avgDirX, avgDirY, out double perpX, out double perpY);
+
+            double midX = (startX + endX) / 2.0;
+            double midY = (startY + endY) / 2.0;
+            double dimX = midX - offset * perpX;
+            double dimY = midY - offset * perpY;
+
+            try
             {
-                perpX = -avgDirY;
-                perpY = avgDirX;
+                this._acamApp.ActiveDrawing.Dimension.CreateAligned(startX, startY, endX, endY, dimX, dimY, dimX, dimY);
             }
-            else
+            catch (Exception ex)
             {
-                perpX = avgDirY;
-                perpY = -avgDirX;
+                ShowErrorAndBreak($"Exception: {ex.Message}");
             }
         }
-        else
-        {
-            // Line segment direction based on perpendicular
-            perpX = avgDirY;
-            perpY = -avgDirX;
-        }
-
-        // Compute middle position and dimension vectors
-        double midX = (startX + endX) / 2.0;
-        double midY = (startY + endY) / 2.0;
-        double dimX = midX - offset * perpX;
-        double dimY = midY - offset * perpY;
-
-        try
-        {
-            // Create aligned dimension
-            this._acamApp.ActiveDrawing.Dimension.CreateAligned(startX, startY, endX, endY, dimX, dimY, dimX, dimY);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Exception: {ex.Message}"); 
-        }
-
-        // Update for the next loop
         previousElement = element;
-        element = nextElement; // Get the next element
-        count++;
-      } 
+        element = nextElement;
     }
-    
-    
+}
 
+    private void ShowErrorAndBreak(string errorMessage)
+    {
+        MessageBox.Show(errorMessage);
+        // Consider logging the error message or throw an exception here
+    }
 
+    private void ApplyOffsetIfNextElementIsArc(Element element, Element nextElement, ref double endX, ref double endY)
+    {
+      element.GetDirection(endX, endY, out var endDirX, out var endDirY, out _);
+
+      if (nextElement != null && nextElement.IsArc)
+      {
+        endX += nextElement.Radius * endDirX;
+        endY += nextElement.Radius * endDirY;
+      }
+    }
+    private void ApplyOffsetForPreviousArc(Element previousElement, ref double startX, ref double startY, double startDirX, double startDirY)
+    {
+        startX -= previousElement.Radius * startDirX;
+        startY -= previousElement.Radius * startDirY;
+    }
+
+    private void CalculatePerpendicularDirections(Element element, double avgDirX, double avgDirY, out double perpX, out double perpY)
+    {
+      if (element.IsArc)
+      {
+        perpX = (!element.CW && avgDirY < 0.0) || (element.CW && avgDirY >= 0.0)? -avgDirY: avgDirY;
+        perpY = (!element.CW && avgDirY < 0.0) || (element.CW && avgDirY >= 0.0)? avgDirX: -avgDirX;
+      }
+      else
+      {
+        perpX = avgDirY;
+        perpY = -avgDirX;
+      }
+    }
 
 
 
@@ -198,6 +194,32 @@ namespace DimensionAll.Models
       return layer != null && layer.Name.StartsWith("APS GEOMETRY", StringComparison.OrdinalIgnoreCase);
     }
 
+    
+    private void SetToolSideForAllGeometries(Paths paths) //Setting tool side here
+    {
+      try
+      {
+        foreach (var path in paths)
+        {
+          if (path is IPath pathObject && pathObject.Closed)
+          {
+            pathObject.Selected = true;
+          }
+        }
+
+        _acamApp.ActiveDrawing.SetToolSideAuto(AcamAutoToolSide.acamToolSideCUT);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show($"Error in SetToolSideAuto: {ex.Message}");
+      }
+    }
+
+    private bool DetermineIfInternal(IPath element) //check if its internal
+    {
+      return element.ToolSide == AcamToolSide.acamRIGHT;
+    }
+    
     public void ResetRunCount()
     {
       try

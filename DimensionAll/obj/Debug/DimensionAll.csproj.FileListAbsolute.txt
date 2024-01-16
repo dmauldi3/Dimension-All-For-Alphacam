@@ -1,0 +1,11 @@
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\DimensionAll\bin\Debug\DimensionAll.dll.config
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\DimensionAll\bin\Debug\DimensionAll.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\DimensionAll\bin\Debug\DimensionAll.pdb
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\DimensionAll\bin\Debug\Interop.AlphaCAMMill.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\DimensionAll\obj\Debug\DimensionAll.csproj.AssemblyReference.cache
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\DimensionAll\obj\Debug\DimensionAll.Properties.Resources.resources
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\DimensionAll\obj\Debug\DimensionAll.csproj.GenerateResource.cache
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\DimensionAll\obj\Debug\DimensionAll.csproj.CoreCompileInputs.cache
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\DimensionAll\obj\Debug\DimensionAll.csproj.CopyComplete
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\DimensionAll\obj\Debug\DimensionAll.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\DimensionAll\obj\Debug\DimensionAll.pdb
