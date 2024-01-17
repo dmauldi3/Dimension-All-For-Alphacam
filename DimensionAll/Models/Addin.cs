@@ -1,10 +1,6 @@
 ﻿using AlphaCAMMill;
 using System;
 using System.IO;
-using System.Windows;
-
-
-[assembly: log4net.Config.XmlConfigurator(ConfigFile="log4net.config", Watch=true)]
 
 
 namespace DimensionAll.Models
@@ -12,7 +8,7 @@ namespace DimensionAll.Models
   public sealed class Addin
   {
     
-    private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(Addin));
+    private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(typeof(Addin));
     
     private readonly App _acamApp;
     private readonly string _runCountFilePath;
@@ -24,22 +20,24 @@ namespace DimensionAll.Models
       if (!Directory.Exists(str))
         Directory.CreateDirectory(str);
       this._runCountFilePath = System.IO.Path.Combine(str, "run_count.txt");
+      Log.Info($"Addin - Run count file path: {_runCountFilePath}");
     }
     
     public void DimensionAll()
     {
-      log.Info("DimensionAll - Start");
+      Log.Info($"DimensionAll - Start");
       int andUpdateRunCount = this.GetAndUpdateRunCount();
       Drawing activeDrawing = this._acamApp.ActiveDrawing;
       if (activeDrawing.Geometries.Count == 0)
       {
-        MessageBox.Show("No geometries found to measure.");
+        Log.Warn("No geometries found to measure.");
       }
       else
       {
-        
+        Log.Info($"DimensionAll - Processing {activeDrawing.Geometries.Count} geometries.");
+
         SetToolSideForAllGeometries(activeDrawing.Geometries); //Set tool side for all geometries
-        
+
         foreach (object geometry in activeDrawing.Geometries)
         {
           if (geometry is IPath element && IsGeometryLayer(element))
@@ -49,22 +47,20 @@ namespace DimensionAll.Models
               if (andUpdateRunCount % 2 == 1)
               {
                 this.CreateDimensions(element);
-
                 activeDrawing.ZoomAll();
+                Log.Info("DimensionAll - Dimensions created and zoomed all.");
               }
               else
               {
                 this.DeleteDimensions();
+                Log.Info("DimensionAll - Dimensions deleted.");
               }
             }
-
             activeDrawing.Refresh();
-            
-            log.Info("DimensionAll - End");
-            
           }
         }
       }
+      Log.Info("DimensionAll - End");
     }
 
     private int GetAndUpdateRunCount()
@@ -79,8 +75,9 @@ namespace DimensionAll.Models
           andUpdateRunCount = result == 1 ? 2 : 1;
         }
         catch (Exception ex)
-        {
-          throw new IOException("Error reading run count: " + ex.Message, ex);
+        { Log.Error("Error reading run count: " + ex.Message, ex);
+          // In case of exception, should we re-throw, halt the execution, or continue? If we re-throw or halt, uncomment the line below
+          // throw new IOException("Error reading run count: " + ex.Message, ex);
         }
       }
       try
@@ -89,7 +86,8 @@ namespace DimensionAll.Models
       }
       catch (Exception ex)
       {
-        throw new IOException("Error writing run count: " + ex.Message, ex);
+        Log.Error("Error writing run count: " + ex.Message, ex);
+        // Should we re-throw or halt execution here in case of exception?
       }
       return andUpdateRunCount;
     }
@@ -157,10 +155,9 @@ private void CreateDimensions(IPath path)
 
     private void ShowErrorAndBreak(string errorMessage)
     {
-        MessageBox.Show(errorMessage);
-        // Consider logging the error message or throw an exception here
+      Log.Error(errorMessage);
     }
-
+    
     private void ApplyOffsetIfNextElementIsArc(Element element, Element nextElement, ref double endX, ref double endY)
     {
       element.GetDirection(endX, endY, out var endDirX, out var endDirY, out _);
@@ -208,11 +205,10 @@ private void CreateDimensions(IPath path)
     
     private void SetToolSideForAllGeometries(Paths paths)
     {
-      log.Info($"SetToolSideForAllGeometries - Start, paths count: {paths.Count}");
+      Log.Info($"SetToolSideForAllGeometries - Start, paths count: {paths.Count}");
+      int closedPathsCount = 0;
       try
       {
-        int closedPathsCount = 0;
-
         foreach (var path in paths)
         {
           if (path is IPath pathObject && pathObject.Closed)
@@ -222,18 +218,18 @@ private void CreateDimensions(IPath path)
           }
         }
 
-        log.Info($"SetToolSideForAllGeometries - closed paths count: {closedPathsCount}");
+        Log.Info($"SetToolSideForAllGeometries - closed paths count: {closedPathsCount}");
 
         _acamApp.ActiveDrawing.SetToolSideAuto(AcamAutoToolSide.acamToolSideCUT);
       }
       catch (Exception ex)
       {
-        log.Error("Error in SetToolSideAuto", ex);
-        MessageBox.Show($"Error in SetToolSideAuto: {ex.Message}");
+        Log.Error($"Error in SetToolSideAuto: paths count: {paths.Count}, closed paths: {closedPathsCount}", ex);
+        //MessageBox.Show($"Error in SetToolSideAuto: {ex.Message}");
       }
-      log.Info("SetToolSideForAllGeometries - End");
+      Log.Info("SetToolSideForAllGeometries - End");
     }
-
+      
     private bool DetermineIfInternal(IPath element) //check if its internal
     {
       return element.ToolSide == AcamToolSide.acamRIGHT;
@@ -247,7 +243,7 @@ private void CreateDimensions(IPath path)
       }
       catch (Exception ex)
       {
-        MessageBox.Show("Error resetting run count: " + ex.Message);
+        Log.Error("Error resetting run count: " + ex.Message, ex);
       }
     }
   }
