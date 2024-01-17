@@ -3,10 +3,17 @@ using System;
 using System.IO;
 using System.Windows;
 
+
+[assembly: log4net.Config.XmlConfigurator(ConfigFile="log4net.config", Watch=true)]
+
+
 namespace DimensionAll.Models
 {
   public sealed class Addin
   {
+    
+    private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(Addin));
+    
     private readonly App _acamApp;
     private readonly string _runCountFilePath;
     
@@ -21,6 +28,7 @@ namespace DimensionAll.Models
     
     public void DimensionAll()
     {
+      log.Info("DimensionAll - Start");
       int andUpdateRunCount = this.GetAndUpdateRunCount();
       Drawing activeDrawing = this._acamApp.ActiveDrawing;
       if (activeDrawing.Geometries.Count == 0)
@@ -51,6 +59,9 @@ namespace DimensionAll.Models
             }
 
             activeDrawing.Refresh();
+            
+            log.Info("DimensionAll - End");
+            
           }
         }
       }
@@ -195,24 +206,32 @@ private void CreateDimensions(IPath path)
     }
 
     
-    private void SetToolSideForAllGeometries(Paths paths) //Setting tool side here
+    private void SetToolSideForAllGeometries(Paths paths)
     {
+      log.Info($"SetToolSideForAllGeometries - Start, paths count: {paths.Count}");
       try
       {
+        int closedPathsCount = 0;
+
         foreach (var path in paths)
         {
           if (path is IPath pathObject && pathObject.Closed)
           {
+            closedPathsCount++;
             pathObject.Selected = true;
           }
         }
+
+        log.Info($"SetToolSideForAllGeometries - closed paths count: {closedPathsCount}");
 
         _acamApp.ActiveDrawing.SetToolSideAuto(AcamAutoToolSide.acamToolSideCUT);
       }
       catch (Exception ex)
       {
+        log.Error("Error in SetToolSideAuto", ex);
         MessageBox.Show($"Error in SetToolSideAuto: {ex.Message}");
       }
+      log.Info("SetToolSideForAllGeometries - End");
     }
 
     private bool DetermineIfInternal(IPath element) //check if its internal
