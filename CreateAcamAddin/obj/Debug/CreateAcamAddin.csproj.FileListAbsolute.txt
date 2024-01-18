@@ -11,3 +11,39 @@ C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\Cre
 C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\CreateAcamAddin\obj\Debug\CreateAcamAddin.csproj.CoreCompileInputs.cache
 C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\CreateAcamAddin\obj\Debug\CreateAcamAddin.exe
 C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\CreateAcamAddin\obj\Debug\CreateAcamAddin.pdb
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\CreateAcamAddin.exe.config
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\CreateAcamAddin.exe
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\CreateAcamAddin.pdb
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\Microsoft.Extensions.DependencyModel.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\Microsoft.Extensions.Primitives.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Buffers.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Diagnostics.DiagnosticSource.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Memory.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Text.Encodings.Web.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Text.Json.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.ValueTuple.dll
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\Microsoft.Extensions.Configuration.Binder.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\Microsoft.Extensions.DependencyModel.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\Microsoft.Extensions.Primitives.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Buffers.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Diagnostics.DiagnosticSource.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Memory.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Text.Encodings.Web.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Text.Json.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\System.ValueTuple.xml
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\obj\Debug\CreateAcamAddin.csproj.AssemblyReference.cache
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\obj\Debug\CreateAcamAddin.csproj.CoreCompileInputs.cache
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\obj\Debug\CreateAcamAddin.csproj.CopyComplete
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\obj\Debug\CreateAcamAddin.exe
+C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\obj\Debug\CreateAcamAddin.pdb

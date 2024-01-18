@@ -90,8 +90,10 @@ namespace DimensionAll.Models
       return andUpdateRunCount;
     }
 
-private void CreateDimensions(IPath path)
-{
+    private void CreateDimensions(IPath path)
+    {
+      Log.Information("Creating dimensions for path");
+      
     double offset = 10.0;
     int count = 0;
     int totalElements = path.GetElemCount();
@@ -103,7 +105,9 @@ private void CreateDimensions(IPath path)
     Element element = path.GetFirstElem();
     while (count++ < totalElements && element != null)
     {
-        Element nextElement = element.GetNext();
+      Element nextElement = element.GetNext();
+  
+      Log.Debug("Processing element {ElementNumber} of {TotalElements}", count, totalElements);
 
         double startX = element.StartXG;
         double startY = element.StartYG;
@@ -120,35 +124,44 @@ private void CreateDimensions(IPath path)
 
         previousWasArc = element.IsArc;
 
-        // Check if the line length is greater than the minimum length and if the element is not an arc
+// Check if the line length is greater than the minimum length and if the element is not an arc
         if (!element.IsArc && element.Length > minimumLength)
         {
           element.GetDirection(startX, startY, out var startDirX, out var startDirY, out _);
-            element.GetDirection(endX, endY, out var endDirX, out var endDirY, out _);
+          element.GetDirection(endX, endY, out var endDirX, out var endDirY, out _);
 
-            var avgDirX = (startDirX + endDirX) / 2.0;
-            var avgDirY = (startDirY + endDirY) / 2.0;
+          var avgDirX = (startDirX + endDirX) / 2.0;
+          var avgDirY = (startDirY + endDirY) / 2.0;
 
-            CalculatePerpendicularDirections(element, avgDirX, avgDirY, out double perpX, out double perpY);
+          CalculatePerpendicularDirections(element, avgDirX, avgDirY, out double perpX, out double perpY);
 
-            double midX = (startX + endX) / 2.0;
-            double midY = (startY + endY) / 2.0;
-            double dimX = midX - offset * perpX;
-            double dimY = midY - offset * perpY;
+          double midX = (startX + endX) / 2.0;
+          double midY = (startY + endY) / 2.0;
+          double dimX = midX - offset * perpX;
+          double dimY = midY - offset * perpY;
 
-            try
-            {
-                this._acamApp.ActiveDrawing.Dimension.CreateAligned(startX, startY, endX, endY, dimX, dimY, dimX, dimY);
-            }
-            catch (Exception ex)
-            {
-                ShowErrorAndBreak($"Exception: {ex.Message}");
-            }
+          Log.Debug("Start creating aligned dimension for element {ElementNumber}", count);
+
+          try
+          {
+            this._acamApp.ActiveDrawing.Dimension.CreateAligned(startX, startY, endX, endY, dimX, dimY, dimX, dimY);
+            Log.Debug("Dimension for element {ElementNumber} created successfully", count);
+          }
+          catch (Exception ex)
+          {
+            Log.Error(ex, "Failed to create dimension for element {ElementNumber}", count);
+            ShowErrorAndBreak($"Exception: {ex.Message}");
+          }
         }
+        Log.Debug("Finished processing element {ElementNumber}", count);
+
         previousElement = element;
         element = nextElement;
     }
-}
+   
+    Log.Information("Finished creating dimensions");
+    }
+    
 
     private void ShowErrorAndBreak(string errorMessage)
     {
@@ -167,8 +180,8 @@ private void CreateDimensions(IPath path)
     }
     private void ApplyOffsetForPreviousArc(Element previousElement, ref double startX, ref double startY, double startDirX, double startDirY)
     {
-        startX -= previousElement.Radius * startDirX;
-        startY -= previousElement.Radius * startDirY;
+      startX -= previousElement.Radius * startDirX;
+      startY -= previousElement.Radius * startDirY;
     }
 
     private void CalculatePerpendicularDirections(Element element, double avgDirX, double avgDirY, out double perpX, out double perpY)
