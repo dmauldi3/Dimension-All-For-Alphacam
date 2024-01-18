@@ -1,6 +1,6 @@
 ﻿using AlphaCAMMill;
 using System;
-
+using Serilog;
 
 namespace DimensionAll.Models
 {
@@ -34,15 +34,23 @@ namespace DimensionAll.Models
 
     private void OnInitAddin(AcamInitAddInAction action, EventData data)
     {
+      //Log Config
+      Log.Logger = new LoggerConfiguration()
+        .WriteTo.Console()
+        .WriteTo.Debug()
+        .WriteTo.File("C:\\Alphacam\\LICOMDIR\\ESE_TOOLS\\Logs\\Logfile.txt")
+        .CreateLogger();
+
       using (MemoryManager memoryManager = new MemoryManager())
       {
-       _objAddin = new Addin(_comApp.Application);
+        _objAddin = new Addin(_comApp.Application);
         IFrame frame =  memoryManager.Add(_comApp.Frame);
         _comCommand = _memMgr.Add(frame.CreateCommandItem());
-        
+
         _comCommand.OnCommand += (OnCommand);
         _comCommand.OnUpdate += (OnUpdate);
-        frame.AddMenuItem43("DIMENSION ALL", "CMD_MYCOMMAND", AcamCommand.acamCmdUTILS_ADDINS, true, "My Addins", frame.LastMenuCommandID, this._comCommand);
+        frame.AddMenuItem43("DIMENSION ALL", "CMD_MYCOMMAND", AcamCommand.acamCmdUTILS_ADDINS, 
+          true, "My Addins", frame.LastMenuCommandID, this._comCommand);
       }
       data.ReturnCode = 0;
     }

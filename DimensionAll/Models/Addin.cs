@@ -1,15 +1,13 @@
 ﻿using AlphaCAMMill;
 using System;
 using System.IO;
-
+using Serilog;
 
 namespace DimensionAll.Models
 {
   public sealed class Addin
   {
-    
-    private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(typeof(Addin));
-    
+
     private readonly App _acamApp;
     private readonly string _runCountFilePath;
     
@@ -20,21 +18,21 @@ namespace DimensionAll.Models
       if (!Directory.Exists(str))
         Directory.CreateDirectory(str);
       this._runCountFilePath = System.IO.Path.Combine(str, "run_count.txt");
-      Log.Info($"Addin - Run count file path: {_runCountFilePath}");
     }
     
     public void DimensionAll()
     {
-      Log.Info($"DimensionAll - Start");
+      
+      Log.Information($"DimensionAll - Start");
       int andUpdateRunCount = this.GetAndUpdateRunCount();
       Drawing activeDrawing = this._acamApp.ActiveDrawing;
       if (activeDrawing.Geometries.Count == 0)
       {
-        Log.Warn("No geometries found to measure.");
+        Log.Warning("No geometries found to measure.");
       }
       else
       {
-        Log.Info($"DimensionAll - Processing {activeDrawing.Geometries.Count} geometries.");
+        Log.Information($"DimensionAll - Processing {activeDrawing.Geometries.Count} geometries.");
 
         SetToolSideForAllGeometries(activeDrawing.Geometries); //Set tool side for all geometries
 
@@ -48,19 +46,19 @@ namespace DimensionAll.Models
               {
                 this.CreateDimensions(element);
                 activeDrawing.ZoomAll();
-                Log.Info("DimensionAll - Dimensions created and zoomed all.");
+                Log.Information("DimensionAll - Dimensions created and zoomed all.");
               }
               else
               {
                 this.DeleteDimensions();
-                Log.Info("DimensionAll - Dimensions deleted.");
+                Log.Information("DimensionAll - Dimensions deleted.");
               }
             }
             activeDrawing.Refresh();
           }
         }
       }
-      Log.Info("DimensionAll - End");
+      Log.Information("DimensionAll - End");
     }
 
     private int GetAndUpdateRunCount()
@@ -91,7 +89,6 @@ namespace DimensionAll.Models
       }
       return andUpdateRunCount;
     }
-
 
 private void CreateDimensions(IPath path)
 {
@@ -189,8 +186,6 @@ private void CreateDimensions(IPath path)
     }
 
 
-
-
     private void DeleteDimensions()
     {
       this._acamApp.ActiveDrawing.Clear(false, false, false, true, false, false, false, false);
@@ -201,11 +196,10 @@ private void CreateDimensions(IPath path)
       Layer layer = element.GetLayer();
       return layer != null && layer.Name.StartsWith("APS GEOMETRY", StringComparison.OrdinalIgnoreCase);
     }
-
     
     private void SetToolSideForAllGeometries(Paths paths)
     {
-      Log.Info($"SetToolSideForAllGeometries - Start, paths count: {paths.Count}");
+      Log.Information($"SetToolSideForAllGeometries - Start, paths count: {paths.Count}");
       int closedPathsCount = 0;
       try
       {
@@ -217,8 +211,7 @@ private void CreateDimensions(IPath path)
             pathObject.Selected = true;
           }
         }
-
-        Log.Info($"SetToolSideForAllGeometries - closed paths count: {closedPathsCount}");
+        Log.Information($"SetToolSideForAllGeometries - closed paths count: {closedPathsCount}");
 
         _acamApp.ActiveDrawing.SetToolSideAuto(AcamAutoToolSide.acamToolSideCUT);
       }
@@ -227,7 +220,7 @@ private void CreateDimensions(IPath path)
         Log.Error($"Error in SetToolSideAuto: paths count: {paths.Count}, closed paths: {closedPathsCount}", ex);
         //MessageBox.Show($"Error in SetToolSideAuto: {ex.Message}");
       }
-      Log.Info("SetToolSideForAllGeometries - End");
+      Log.Information("SetToolSideForAllGeometries - End");
     }
       
     private bool DetermineIfInternal(IPath element) //check if its internal

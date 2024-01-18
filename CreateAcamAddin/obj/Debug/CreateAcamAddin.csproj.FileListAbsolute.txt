@@ -11,10 +11,3 @@ C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\Cre
 C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\CreateAcamAddin\obj\Debug\CreateAcamAddin.csproj.CoreCompileInputs.cache
 C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\CreateAcamAddin\obj\Debug\CreateAcamAddin.exe
 C:\Users\Daniel\OneDrive\Desktop\AlphacamAddinSample (1)\AlphacamAddinSample\CreateAcamAddin\obj\Debug\CreateAcamAddin.pdb
-C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\CreateAcamAddin.exe.config
-C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\CreateAcamAddin.exe
-C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\bin\Debug\CreateAcamAddin.pdb
-C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\obj\Debug\CreateAcamAddin.csproj.AssemblyReference.cache
-C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\obj\Debug\CreateAcamAddin.csproj.CoreCompileInputs.cache
-C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\obj\Debug\CreateAcamAddin.exe
-C:\Users\Daniel\OneDrive\Desktop\DimensionAll\CreateAcamAddin\obj\Debug\CreateAcamAddin.pdb
