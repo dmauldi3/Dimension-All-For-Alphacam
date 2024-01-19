@@ -19,12 +19,13 @@ namespace DimensionAll.Models
         Directory.CreateDirectory(str);
       this._runCountFilePath = System.IO.Path.Combine(str, "run_count.txt");
     }
-    
+
     public void DimensionAll()
     {
-      
       Log.Information($"DimensionAll - Start");
-      int andUpdateRunCount = this.GetAndUpdateRunCount();
+      var currentRunCount = GetAndUpdateRunCount();
+      Log.Information($"RunCount= {currentRunCount}");
+
       Drawing activeDrawing = this._acamApp.ActiveDrawing;
       if (activeDrawing.Geometries.Count == 0)
       {
@@ -34,31 +35,57 @@ namespace DimensionAll.Models
       {
         Log.Information($"DimensionAll - Processing {activeDrawing.Geometries.Count} geometries.");
 
-        SetToolSideForAllGeometries(activeDrawing.Geometries); //Set tool side for all geometries
+        Log.Information("Calling SetToolSideForAllGeometries()");
+        SetToolSideForAllGeometries(activeDrawing.Geometries); // Set tool side for all geometries
+        Log.Information("Returned from SetToolSideForAllGeometries()");
 
         foreach (object geometry in activeDrawing.Geometries)
         {
-          if (geometry is IPath element && IsGeometryLayer(element))
+          if (geometry is IPath element)
           {
-            if (!DetermineIfInternal(element) && element.Closed) // Add this condition to check if the element is external and closed
+            Log.Information("Processing a geometry item.");
+
+            if (IsGeometryLayer(element) && !DetermineIfInternal(element))
             {
-              if (andUpdateRunCount % 2 == 1)
+              Log.Information("The element is a {ElementType} path on the geometry layer and is external",
+                element.Closed ? "closed" : "open");
+
+              if (element.Closed)
               {
-                this.CreateDimensions(element);
-                activeDrawing.ZoomAll();
-                Log.Information("DimensionAll - Dimensions created and zoomed all.");
+                Log.Information("The element is closed.");
+
+                if (currentRunCount % 2 == 1)
+                {
+                  this.CreateDimensions(element);
+                  activeDrawing.ZoomAll();
+                  Log.Information("DimensionAll - Dimensions created and zoomed all.");
+                }
+                else
+                {
+                  this.DeleteDimensions();
+                  Log.Information("DimensionAll - Dimensions deleted.");
+                }
               }
               else
               {
-                this.DeleteDimensions();
-                Log.Information("DimensionAll - Dimensions deleted.");
+                Log.Warning("The element is not closed, skipping dimension creation");
               }
+
+              activeDrawing.Refresh();
             }
-            activeDrawing.Refresh();
+            else
+            {
+              Log.Warning("Skipping an element either because it's not on the geometry layer, it's internal, or both.");
+            }
+          }
+          else
+          {
+            Log.Information("Skipping a non-path geometry item");
           }
         }
+
+        Log.Information("DimensionAll - End");
       }
-      Log.Information("DimensionAll - End");
     }
 
     private int GetAndUpdateRunCount()
@@ -92,7 +119,7 @@ namespace DimensionAll.Models
 
     private void CreateDimensions(IPath path)
     {
-      Log.Information("Creating dimensions for path");
+      Log.Information("Starting to create dimensions for path");
       
     double offset = 10.0;
     int count = 0;
@@ -124,6 +151,8 @@ namespace DimensionAll.Models
 
         previousWasArc = element.IsArc;
 
+        Log.Debug("Processing element {ElementNumber} of {TotalElements}, Start X {startX}, Start Y {startY}, End X {endX}, End Y {endY}", count, totalElements, startX, startY, endX, endY);
+        
 // Check if the line length is greater than the minimum length and if the element is not an arc
         if (!element.IsArc && element.Length > minimumLength)
         {
@@ -140,7 +169,7 @@ namespace DimensionAll.Models
           double dimX = midX - offset * perpX;
           double dimY = midY - offset * perpY;
 
-          Log.Debug("Start creating aligned dimension for element {ElementNumber}", count);
+          Log.Information("Creating an aligned dimension for element {ElementNumber}, Dimension X {dimX}, Dimension Y {dimY}", count, Math.Round(dimX, 3), Math.Round(dimY, 3));
 
           try
           {
@@ -152,7 +181,13 @@ namespace DimensionAll.Models
             Log.Error(ex, "Failed to create dimension for element {ElementNumber}", count);
             ShowErrorAndBreak($"Exception: {ex.Message}");
           }
+        } else {
+          if (element.IsArc)
+            Log.Information("Element {ElementNumber} is an arc, so no dimension is created", count);
+          else
+            Log.Information("Element {ElementNumber} has a length less than the minimum length {minimumLength}, so no dimension is created", count, minimumLength);
         }
+
         Log.Debug("Finished processing element {ElementNumber}", count);
 
         previousElement = element;
@@ -207,7 +242,14 @@ namespace DimensionAll.Models
     private bool IsGeometryLayer(IPath element)
     {
       Layer layer = element.GetLayer();
-      return layer != null && layer.Name.StartsWith("APS GEOMETRY", StringComparison.OrdinalIgnoreCase);
+      bool isGeometryLayer = layer != null && layer.Name.StartsWith("APS GEOMETRY", StringComparison.OrdinalIgnoreCase);
+
+      if (!isGeometryLayer)
+      {
+        Log.Debug($"Element of type {element.GetType().Name} is not on the geometry layer: it's on the '{layer?.Name}' layer");
+      }
+  
+      return isGeometryLayer;
     }
     
     private void SetToolSideForAllGeometries(Paths paths)
@@ -231,14 +273,19 @@ namespace DimensionAll.Models
       catch (Exception ex)
       {
         Log.Error($"Error in SetToolSideAuto: paths count: {paths.Count}, closed paths: {closedPathsCount}", ex);
-        //MessageBox.Show($"Error in SetToolSideAuto: {ex.Message}");
       }
       Log.Information("SetToolSideForAllGeometries - End");
     }
       
     private bool DetermineIfInternal(IPath element) //check if its internal
     {
-      return element.ToolSide == AcamToolSide.acamRIGHT;
+      Log.Debug("Determining whether the element is internal");
+
+      var isInternal = element.ToolSide == AcamToolSide.acamRIGHT;
+
+      Log.Debug("The element is {elementStatus}", isInternal ? "internal" : "not internal");
+
+      return isInternal;
     }
     
     public void ResetRunCount()
