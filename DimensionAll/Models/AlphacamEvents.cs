@@ -34,8 +34,9 @@ namespace DimensionAll.Models
 
     private void OnInitAddin(AcamInitAddInAction action, EventData data)
     {
-      //Log Config
+// Log Configuration
       Log.Logger = new LoggerConfiguration()
+        .MinimumLevel.Debug() // Set minimum log level to Debug
         .WriteTo.Console()
         .WriteTo.Debug()
         .WriteTo.File("C:\\Alphacam\\LICOMDIR\\ESE_TOOLS\\Logs\\Logfile.txt")

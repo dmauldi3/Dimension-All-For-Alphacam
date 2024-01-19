@@ -7,17 +7,16 @@ namespace DimensionAll.Models
 {
   public sealed class Addin
   {
-
     private readonly App _acamApp;
     private readonly string _runCountFilePath;
-    
+
     public Addin(App acamApplication)
     {
-      this._acamApp = acamApplication;
-      string str = System.IO.Path.Combine(this._acamApp.LicomdirPath, "Licomdir", "ESE_TOOLS");
-      if (!Directory.Exists(str))
-        Directory.CreateDirectory(str);
-      this._runCountFilePath = System.IO.Path.Combine(str, "run_count.txt");
+      _acamApp = acamApplication;
+      string directoryPath = System.IO.Path.Combine(_acamApp.LicomdirPath, "Licomdir", "ESE_TOOLS");
+      if (!Directory.Exists(directoryPath))
+        Directory.CreateDirectory(directoryPath);
+      _runCountFilePath = System.IO.Path.Combine(directoryPath, "run_count.txt");
     }
 
     public void DimensionAll()
@@ -45,7 +44,7 @@ namespace DimensionAll.Models
           {
             Log.Information("Processing a geometry item.");
 
-            if (IsGeometryLayer(element) && !DetermineIfInternal(element))
+            if (IsGeometryLayer(element))
             {
               Log.Information("The element is a {ElementType} path on the geometry layer and is external",
                 element.Closed ? "closed" : "open");
@@ -75,7 +74,7 @@ namespace DimensionAll.Models
             }
             else
             {
-              Log.Warning("Skipping an element either because it's not on the geometry layer, it's internal, or both.");
+              Log.Warning("Skipping an element because it's not on the geometry layer.");
             }
           }
           else
@@ -91,37 +90,32 @@ namespace DimensionAll.Models
     private int GetAndUpdateRunCount()
     {
       int andUpdateRunCount = 1;
-      if (File.Exists(this._runCountFilePath))
-      {
-        try
-        {
-          if (!int.TryParse(File.ReadAllText(this._runCountFilePath), out int result))
-            throw new InvalidOperationException("The run count file contains invalid data.");
-          andUpdateRunCount = result == 1 ? 2 : 1;
-        }
-        catch (Exception ex)
-        { Log.Error("Error reading run count: " + ex.Message, ex);
-          // In case of exception, should we re-throw, halt the execution, or continue? If we re-throw or halt, uncomment the line below
-          // throw new IOException("Error reading run count: " + ex.Message, ex);
-        }
-      }
       try
       {
+        if (File.Exists(this._runCountFilePath))
+        {
+          if (!int.TryParse(File.ReadAllText(this._runCountFilePath), out int result))
+          {
+            throw new InvalidOperationException("The run count file contains invalid data.");
+          }
+          andUpdateRunCount = result == 1 ? 2 : 1;
+        }
         File.WriteAllText(this._runCountFilePath, andUpdateRunCount.ToString());
       }
       catch (Exception ex)
       {
-        Log.Error("Error writing run count: " + ex.Message, ex);
-        // Should we re-throw or halt execution here in case of exception?
+        Log.Error(ex, "Error processing the run count: " + ex.Message);
+        throw; // Re-throwing the exception
       }
       return andUpdateRunCount;
     }
 
-    private void CreateDimensions(IPath path)
-    {
-      Log.Information("Starting to create dimensions for path");
-      
-    double offset = 10.0;
+    
+void CreateDimensions(IPath path)
+{
+    Log.Information("Starting to create dimensions for path");
+
+    double offset;
     int count = 0;
     int totalElements = path.GetElemCount();
     double minimumLength = 4.0; // Set your minimum length here
@@ -132,9 +126,9 @@ namespace DimensionAll.Models
     Element element = path.GetFirstElem();
     while (count++ < totalElements && element != null)
     {
-      Element nextElement = element.GetNext();
-  
-      Log.Debug("Processing element {ElementNumber} of {TotalElements}", count, totalElements);
+        Element nextElement = element.GetNext();
+
+        Log.Debug("Processing element {ElementNumber} of {TotalElements}", count, totalElements);
 
         double startX = element.StartXG;
         double startY = element.StartYG;
@@ -145,42 +139,48 @@ namespace DimensionAll.Models
 
         if (previousWasArc && previousElement != null)
         {
-          previousElement.GetDirection(startX, startY, out var startDirX, out var startDirY, out _);
+            previousElement.GetDirection(startX, startY, out var startDirX, out var startDirY, out _);
             ApplyOffsetForPreviousArc(previousElement, ref startX, ref startY, startDirX, startDirY);
         }
 
         previousWasArc = element.IsArc;
 
-        Log.Debug("Processing element {ElementNumber} of {TotalElements}, Start X {startX}, Start Y {startY}, End X {endX}, End Y {endY}", count, totalElements, startX, startY, endX, endY);
-        
-// Check if the line length is greater than the minimum length and if the element is not an arc
+        Log.Debug("Processing element {ElementNumber} of {TotalElements}, Start X {startX}, Start Y {startY}, End X {endX}, End Y {endY}", count, totalElements, Math.Round(startX, 3), Math.Round(startY, 3), Math.Round(endX, 3), Math.Round(endY, 3));
+        // Check if the line length is greater than the minimum length and if the element is not an arc
         if (!element.IsArc && element.Length > minimumLength)
         {
-          element.GetDirection(startX, startY, out var startDirX, out var startDirY, out _);
-          element.GetDirection(endX, endY, out var endDirX, out var endDirY, out _);
+            element.GetDirection(startX, startY, out var startDirX, out var startDirY, out _);
+            element.GetDirection(endX, endY, out var endDirX, out var endDirY, out _);
 
-          var avgDirX = (startDirX + endDirX) / 2.0;
-          var avgDirY = (startDirY + endDirY) / 2.0;
+            var avgDirX = (startDirX + endDirX) / 2.0;
+            var avgDirY = (startDirY + endDirY) / 2.0;
 
-          CalculatePerpendicularDirections(element, avgDirX, avgDirY, out double perpX, out double perpY);
+            CalculatePerpendicularDirections(element, avgDirX, avgDirY, out double perpX, out double perpY);
 
-          double midX = (startX + endX) / 2.0;
-          double midY = (startY + endY) / 2.0;
-          double dimX = midX - offset * perpX;
-          double dimY = midY - offset * perpY;
+            double midX = (startX + endX) / 2.0;
+            double midY = (startY + endY) / 2.0;
+            
+            // Adjust offset based on whether the path is internal
+            offset = DetermineIfInternal(path) ? -10.0 : 10.0;
 
-          Log.Information("Creating an aligned dimension for element {ElementNumber}, Dimension X {dimX}, Dimension Y {dimY}", count, Math.Round(dimX, 3), Math.Round(dimY, 3));
+            double dimX = midX - offset * perpX;
+            double dimY = midY - offset * perpY;
 
-          try
-          {
-            this._acamApp.ActiveDrawing.Dimension.CreateAligned(startX, startY, endX, endY, dimX, dimY, dimX, dimY);
-            Log.Debug("Dimension for element {ElementNumber} created successfully", count);
-          }
-          catch (Exception ex)
-          {
-            Log.Error(ex, "Failed to create dimension for element {ElementNumber}", count);
-            ShowErrorAndBreak($"Exception: {ex.Message}");
-          }
+            Log.Information("Creating an aligned dimension for element {ElementNumber}, Dimension X {dimX}, Dimension Y {dimY}", count, Math.Round(dimX, 3), Math.Round(dimY, 3));
+            
+            double controlX = midX - offset * perpX * 1.5; // Example control point
+            double controlY = midY - offset * perpY * 1.5; //
+
+            try
+            {
+                this._acamApp.ActiveDrawing.Dimension.CreateAligned(startX, startY, endX, endY, dimX, dimY, controlX, controlY);
+                Log.Debug("Dimension for element {ElementNumber} created successfully", count);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to create dimension for element {ElementNumber}", count);
+                ShowErrorAndBreak($"Exception: {ex.Message}");
+            }
         } else {
           if (element.IsArc)
             Log.Information("Element {ElementNumber} is an arc, so no dimension is created", count);
@@ -193,15 +193,16 @@ namespace DimensionAll.Models
         previousElement = element;
         element = nextElement;
     }
-   
+
     Log.Information("Finished creating dimensions");
-    }
+}
     
 
     private void ShowErrorAndBreak(string errorMessage)
     {
       Log.Error(errorMessage);
     }
+    
     
     private void ApplyOffsetIfNextElementIsArc(Element element, Element nextElement, ref double endX, ref double endY)
     {
@@ -213,44 +214,55 @@ namespace DimensionAll.Models
         endY += nextElement.Radius * endDirY;
       }
     }
+    
+    
     private void ApplyOffsetForPreviousArc(Element previousElement, ref double startX, ref double startY, double startDirX, double startDirY)
     {
       startX -= previousElement.Radius * startDirX;
       startY -= previousElement.Radius * startDirY;
     }
 
+    
     private void CalculatePerpendicularDirections(Element element, double avgDirX, double avgDirY, out double perpX, out double perpY)
     {
+      Log.Debug($"CalculatePerpendicularDirections - Start, element: {element}, avgDirX: {avgDirX}, avgDirY: {avgDirY}");
+
       if (element.IsArc)
       {
         perpX = (!element.CW && avgDirY < 0.0) || (element.CW && avgDirY >= 0.0)? -avgDirY: avgDirY;
         perpY = (!element.CW && avgDirY < 0.0) || (element.CW && avgDirY >= 0.0)? avgDirX: -avgDirX;
+
+        Log.Debug($"For Arc, perpX: {perpX}, perpY: {perpY}");
       }
       else
       {
-        perpX = avgDirY;
-        perpY = -avgDirX;
-      }
-    }
+        // Lines segments are always counterclockwise
+        perpX = -avgDirY;
+        perpY = avgDirX;
 
+        Log.Debug($"For Non-Arc, perpX: {perpX}, perpY: {perpY}");
+      }
+
+      Log.Debug($"CalculatePerpendicularDirections - End");
+    }
+    
 
     private void DeleteDimensions()
     {
       this._acamApp.ActiveDrawing.Clear(false, false, false, true, false, false, false, false);
     }
 
+    
     private bool IsGeometryLayer(IPath element)
     {
       Layer layer = element.GetLayer();
       bool isGeometryLayer = layer != null && layer.Name.StartsWith("APS GEOMETRY", StringComparison.OrdinalIgnoreCase);
 
-      if (!isGeometryLayer)
-      {
-        Log.Debug($"Element of type {element.GetType().Name} is not on the geometry layer: it's on the '{layer?.Name}' layer");
-      }
-  
+      Log.Debug($"Element on layer: '{layer?.Name}', is considered as on GeometryLayer: {isGeometryLayer}");
+
       return isGeometryLayer;
     }
+    
     
     private void SetToolSideForAllGeometries(Paths paths)
     {
@@ -277,16 +289,17 @@ namespace DimensionAll.Models
       Log.Information("SetToolSideForAllGeometries - End");
     }
       
+    
     private bool DetermineIfInternal(IPath element) //check if its internal
     {
-      Log.Debug("Determining whether the element is internal");
+      bool isInternal = element.ToolSide == AcamToolSide.acamLEFT;
 
-      var isInternal = element.ToolSide == AcamToolSide.acamRIGHT;
-
-      Log.Debug("The element is {elementStatus}", isInternal ? "internal" : "not internal");
+      Log.Debug($"Element with tool side: '{element.ToolSide}', is considering as IsInternal: {isInternal}");
 
       return isInternal;
     }
+    
+    
     
     public void ResetRunCount()
     {
