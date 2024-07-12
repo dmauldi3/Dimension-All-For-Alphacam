@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using Serilog;
+using System.Collections.Generic;
 
 namespace DimensionAll.Models
 {
@@ -9,6 +10,18 @@ namespace DimensionAll.Models
   {
     private readonly App _acamApp;
     private readonly string _runCountFilePath;
+    
+    
+    class DimensionEntity
+    {
+      public IPath Path { get; set; }
+    
+      public Element FirstElement { get; set; }
+      public Element LastConnectedElement { get; set; }
+    }
+    
+    private List<DimensionEntity> _entities = new List<DimensionEntity>();
+    
 
     public Addin(App acamApplication)
     {
@@ -55,6 +68,12 @@ namespace DimensionAll.Models
 
                 if (currentRunCount % 2 == 1)
                 {
+                  DimensionEntity currentEntity = new DimensionEntity
+                  {
+                    Path = element
+                  };
+                  _entities.Add(currentEntity);
+                
                   this.CreateDimensions(element);
                   activeDrawing.ZoomAll();
                   Log.Information("DimensionAll - Dimensions created and zoomed all.");
@@ -261,6 +280,15 @@ void CreateDimensions(IPath path)
       Log.Debug($"Element on layer: '{layer?.Name}', is considered as on GeometryLayer: {isGeometryLayer}");
 
       return isGeometryLayer;
+    }
+    
+    
+    private void ProcessEntitiesAndFillDimensions() 
+    {
+      foreach (DimensionEntity entity in _entities) 
+      {
+        CreateDimensions(entity.Path);
+      }
     }
     
     
