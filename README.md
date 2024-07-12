@@ -1,4 +1,4 @@
-# Dimension All For Alphacam
+# Dimension All For Alphacam (BETA)
 
 ## Overview
 Dimension All For Alphacam is a .NET-based add-in tool for AlphaCAM, designed to automate the dimensioning process in CAD designs. It simplifies tasks for users by providing an efficient way to handle dimensions in their drawings.
@@ -18,8 +18,8 @@ Dimension All For Alphacam is a .NET-based add-in tool for AlphaCAM, designed to
 ## Usage
 - To start dimensioning, select the desired geometry paths in your AlphaCAM project.
 - Activate the Dimension All For Alphacam add-in.
-- The tool will automatically add dimensions to your selected paths.
-- To remove dimensions, run the tool again. It will recognize the second run and remove dimensions accordingly.
+- The tool will automatically add dimensions to all of your geometry layers in a project.
+- To remove dimensions, run the tool again. It will recognize the second run and remove ALL dimensions.
 
 ## System Requirements
 - .NET Framework 4.5 or higher.
